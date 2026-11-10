@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b1f3f">
+  <meta name="theme-color" content="#140a2e">
   <meta name="description" content="Entre no fliperama 3D do REDMAT UFF e escolha seu jogo de matemática.">
   <title>REDMAT Arcade | Fliperama Matemático</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,16 +17,45 @@
 <body>
   <div id="scene-container" aria-label="Ambiente 3D do REDMAT Arcade"></div>
 
+  <!-- Tela inicial: o lobby 3D aparece ao fundo, vivo -->
   <section id="intro" class="intro" aria-labelledby="intro-title">
     <div class="intro-backdrop"></div>
-    <div class="intro-content">
+    <div class="intro-panel">
       <div class="intro-logo"><img src="./assets/logo-redmat.png" alt="REDMAT UFF" width="1100" height="368"></div>
-      <p class="intro-tag">Educação • Tecnologia • Transformação</p>
+      <p class="intro-tag">Educação <i></i> Tecnologia <i></i> Transformação</p>
       <h1 id="intro-title">REDMAT <span>Arcade</span></h1>
       <p class="intro-text">Um fliperama de Matemática para explorar. Caminhe com o Matinho Doutor, escolha uma máquina e aprenda jogando.</p>
-      <button id="start-btn" class="primary-button" type="button">Entrar no fliperama</button>
-      <small class="intro-keys">WASD ou setas para andar &nbsp;·&nbsp; E para jogar &nbsp;·&nbsp; Esc para sair</small>
+      <div class="intro-actions">
+        <button id="start-btn" class="primary-button" type="button"><span>Entrar no fliperama</span><kbd>Enter</kbd></button>
+      </div>
+      <ul class="intro-keys" aria-label="Controles">
+        <li><span class="keycaps"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><em>andar</em></li>
+        <li><kbd class="wide">Shift</kbd><em>correr</em></li>
+        <li><kbd>E</kbd><em>jogar</em></li>
+        <li><kbd class="wide">Esc</kbd><em>sair</em></li>
+      </ul>
+      <div class="intro-chips"><span>10 máquinas</span><span>Salas multiplayer por código</span><span>Projeto REDMAT · UFF</span></div>
     </div>
+  </section>
+
+  <!-- A entrada na oficina requer apenas um código e um apelido. Sem login para alunos. -->
+  <section id="join-overlay" class="join-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="join-title">
+    <form id="join-form" class="join-card" novalidate>
+      <button id="join-cancel" type="button" class="join-close" aria-label="Voltar">×</button>
+      <span class="join-eyebrow">REDMAT ARCADE · MULTIPLAYER</span>
+      <h2 id="join-title">Entre no fliperama</h2>
+      <p>Escolha um apelido para aparecer acima do seu Matinho. Para participar de uma oficina, digite o código que o professor passou.</p>
+      <label for="student-nick">Seu apelido</label>
+      <input id="student-nick" name="nick" type="text" maxlength="18" minlength="2" autocomplete="nickname" placeholder="Ex.: Matinho123" required>
+      <label for="room-code">Código da sala (para jogar com a turma)</label>
+      <input id="room-code" name="room" type="text" maxlength="8" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ex.: MAT7ABC2">
+      <div id="join-error" class="join-error hidden" role="alert"></div>
+      <div class="join-actions">
+        <button id="join-room" type="submit" class="join-primary">Entrar na sala</button>
+        <button id="play-solo" type="button" class="join-secondary">Explorar sozinho</button>
+      </div>
+      <small>Não use nome completo. A sala só funciona quando o professor a cria no painel protegido.</small>
+    </form>
   </section>
 
   <header id="hud" class="hud hidden">
@@ -35,7 +64,12 @@
       <span class="brand-sub">Arcade</span>
     </div>
     <div class="hud-right">
-      <div id="visited" class="visited"><span id="visited-text">0 / 10 exploradas</span><i id="visited-bar"><b></b></i></div>
+      <div id="room-hud" class="room-hud hidden" aria-live="polite">
+        <span id="room-hud-code">SALA</span>
+        <b id="room-hud-count">1/30</b>
+        <button id="leave-room" type="button" title="Sair da sala multiplayer">Sair da sala</button>
+      </div>
+      <div id="visited" class="visited" title="Jogos já explorados"><span id="visited-text">0 / 10 jogos</span><i id="visited-bar"><b></b></i></div>
       <button id="help-btn" class="icon-button" type="button" aria-label="Ajuda">?</button>
     </div>
   </header>
@@ -43,17 +77,18 @@
   <div id="help" class="help hidden" role="dialog" aria-label="Como jogar">
     <button id="help-close" class="close-help" aria-label="Fechar ajuda" type="button">×</button>
     <h2>Como jogar</h2>
-    <p><b>WASD</b> ou <b>setas</b> movimentam o Matinho.<br><b>Shift</b> acelera a caminhada.<br><b>E</b> abre o jogo da máquina próxima.<br><b>Esc</b> fecha o jogo ou esta janela.</p>
-    <p>Aproxime-se da frente de uma máquina para interagir.</p>
+    <p><b>WASD</b> ou <b>setas</b> movimentam o Matinho.<br><b>Shift</b> corre.<br><b>E</b> abre o jogo da máquina próxima.<br><b>Esc</b> fecha o jogo ou esta janela.</p>
+    <p>Aproxime-se da frente de uma máquina para interagir. A <b>roda do mouse</b> dá zoom no lobby.</p>
   </div>
 
   <div id="interaction" class="interaction hidden" role="status">
     <span class="interaction-key">E</span>
-    <div><strong id="interaction-name">Jogo</strong><small>Pressione E para jogar</small></div>
+    <img id="interaction-cover" class="interaction-cover" alt="" width="72" height="40">
+    <div class="interaction-text"><strong id="interaction-name">Jogo</strong><small id="interaction-hint">Pressione E para jogar</small></div>
     <button id="interact-button" type="button">Jogar</button>
   </div>
 
-  <!-- Janela do jogo: gabinete de fliperama completo -->
+  <!-- Janela do jogo: gabinete de fliperama (a área do jogo ocupa quase toda a tela) -->
   <div id="game-modal" class="game-modal hidden" role="dialog" aria-modal="true" aria-label="Jogo selecionado">
     <div class="cabinet" id="cabinet">
       <div class="cab-side cab-side-l" aria-hidden="true"></div>

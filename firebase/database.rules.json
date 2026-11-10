@@ -1,0 +1,76 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "teachers": {
+      "$uid": {
+        ".read": "auth !== null && auth.uid === $uid",
+        ".write": false
+      }
+    },
+    "teacherRooms": {
+      "$uid": {
+        ".read": "auth !== null && auth.uid === $uid && root.child('teachers').child($uid).val() === true",
+        "$code": {
+          ".write": "auth !== null && auth.uid === $uid && root.child('teachers').child($uid).val() === true && newData.val() === true",
+          ".validate": "newData.isBoolean() && newData.val() === true"
+        }
+      }
+    },
+    "rooms": {
+      "$code": {
+        ".read": "auth !== null",
+        "meta": {
+          ".write": "auth !== null && root.child('teachers').child(auth.uid).val() === true && (!data.exists() || data.child('ownerUid').val() === auth.uid)",
+          ".validate": "newData.hasChildren(['title','capacity','open','ownerUid','createdAt']) && newData.child('ownerUid').val() === auth.uid && newData.child('title').isString() && newData.child('title').val().length <= 50 && newData.child('title').val().length >= 1 && newData.child('capacity').isNumber() && newData.child('capacity').val() >= 1 && newData.child('capacity').val() <= 30 && newData.child('open').isBoolean() && newData.child('createdAt').isNumber()",
+          "$other": {
+            ".validate": false
+          },
+          "title": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 50"
+          },
+          "capacity": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 30"
+          },
+          "open": {
+            ".validate": "newData.isBoolean()"
+          },
+          "ownerUid": {
+            ".validate": "newData.isString() && newData.val() === auth.uid"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          }
+        },
+        "players": {
+          ".write": "auth !== null && root.child('teachers').child(auth.uid).val() === true && !newData.exists()",
+          "$uid": {
+            ".write": "auth !== null && auth.uid === $uid && root.child('rooms').child($code).child('meta').exists() && (!newData.exists() || root.child('rooms').child($code).child('meta').child('open').val() === true)",
+            ".validate": "newData.hasChildren(['nick','x','z','yaw','moving','ts'])",
+            "nick": {
+              ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 18"
+            },
+            "x": {
+              ".validate": "newData.isNumber() && newData.val() >= -18.3 && newData.val() <= 18.3"
+            },
+            "z": {
+              ".validate": "newData.isNumber() && newData.val() >= -11 && newData.val() <= 11.6"
+            },
+            "yaw": {
+              ".validate": "newData.isNumber() && newData.val() >= -3.142 && newData.val() <= 3.142"
+            },
+            "moving": {
+              ".validate": "newData.isBoolean()"
+            },
+            "ts": {
+              ".validate": "newData.isNumber()"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    }
+  }
+}

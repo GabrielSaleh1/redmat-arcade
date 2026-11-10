@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111b3d">
+  <title>Painel do professor | REDMAT Arcade</title>
+  <link rel="stylesheet" href="./professor.css">
+</head>
+<body>
+  <main class="teacher-layout">
+    <header class="teacher-header">
+      <div class="logo-text">REDMAT <span>ARCADE</span></div>
+      <div class="teacher-badge">PAINEL RESTRITO • OFICINAS</div>
+    </header>
+    <section class="teacher-card" id="login-section">
+      <h1>Acesso do professor</h1>
+      <p>Apenas contas autorizadas conseguem criar salas e controlar as oficinas. Alunos não precisam de login, apenas do código.</p>
+      <form id="login-form">
+        <label for="teacher-email">E-mail</label>
+        <input id="teacher-email" type="email" autocomplete="username" required>
+        <label for="teacher-password">Senha</label>
+        <input id="teacher-password" type="password" autocomplete="current-password" required>
+        <button id="login-button" type="submit">Entrar no painel</button>
+      </form>
+      <p id="login-error" class="message error" aria-live="polite"></p>
+    </section>
+    <section class="teacher-card hidden" id="control-section">
+      <div class="card-heading">
+        <div><span class="eyebrow">ACESSO AUTORIZADO</span><h1>Gerenciar oficinas</h1><small id="logged-as"></small></div>
+        <button id="logout-button" class="secondary" type="button">Sair da conta</button>
+      </div>
+      <div class="create-grid">
+        <form id="create-form" class="create-form">
+          <h2>Criar uma sala</h2>
+          <label for="workshop-name">Nome da oficina</label>
+          <input id="workshop-name" maxlength="50" placeholder="Oficina de Matemática" value="Oficina REDMAT" required>
+          <label for="max-participants">Capacidade</label>
+          <select id="max-participants"><option value="10">10 alunos</option><option value="20">20 alunos</option><option value="30" selected>30 alunos</option></select>
+          <button type="submit" id="create-button">Criar sala privada</button>
+          <p class="info">As salas têm código aleatório. Quem recebe o código consegue entrar como aluno, mas não ganha acesso ao painel.</p>
+        </form>
+        <div class="room-info">
+          <h2>Sala selecionada</h2>
+          <div id="selected-empty" class="dim">Crie ou selecione uma sala.</div>
+          <div id="selected-info" class="hidden">
+            <span class="eyebrow">CÓDIGO PARA A TURMA</span>
+            <div id="selected-code" class="room-code">—</div>
+            <div id="selected-meta" class="dim"></div>
+            <div id="selected-count" class="count">0 participantes</div>
+            <div class="actions">
+              <button id="copy-code" class="secondary" type="button">Copiar código</button>
+              <button id="copy-link" class="secondary" type="button">Copiar convite</button>
+              <button id="end-room" class="danger" type="button">Encerrar sala</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="split">
+        <div><h2>Minhas salas</h2><div id="rooms-list" class="rooms-list"><p class="dim">Carregando...</p></div></div>
+        <div><h2>Alunos conectados <span id="students-total"></span></h2><div id="students-list" class="students-list"><p class="dim">Selecione uma sala.</p></div></div>
+      </div>
+      <p id="teacher-message" class="message" aria-live="polite"></p>
+    </section>
+    <footer>REDMAT / UFF • Os apelidos são temporários. Evite coletar nomes completos dos alunos.</footer>
+  </main>
+  <script type="module" src="./src/teacher.js"></script>
+</body>
+</html>
