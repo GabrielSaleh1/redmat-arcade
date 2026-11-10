@@ -52,7 +52,16 @@ canvas{display:block}
 .intro h1 span{display:block;background:linear-gradient(90deg,var(--cyan),#ff8ad8 62%,var(--yellow));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;
   filter:drop-shadow(0 4px 0 rgba(14,42,94,.9))}
 .intro-text{max-width:470px;margin:0;font-size:clamp(.92rem,1.8vw,1.08rem);line-height:1.6;font-weight:600;color:#e3ecf8}
-.intro-actions{margin:clamp(16px,3vh,26px) 0 clamp(14px,2.4vh,20px)}
+.intro-actions{margin:clamp(16px,3vh,26px) 0 clamp(14px,2.4vh,20px);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+/* A navegação ao painel é visível, mas o login e a autorização são validados pelo Firebase. */
+.teacher-access-link{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:51px;
+  padding:12px 18px;border:1px solid rgba(155,222,251,.5);border-radius:13px;
+  background:rgba(11,31,63,.56);color:var(--cream);font-size:.84rem;font-weight:800;
+  text-decoration:none;white-space:nowrap;box-shadow:0 5px 14px rgba(0,0,0,.2);
+  transition:background .15s,border-color .15s,transform .15s}
+.teacher-access-link:hover{background:rgba(27,69,110,.8);border-color:var(--cyan);transform:translateY(-2px)}
+.teacher-access-link:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.teacher-access-link svg{flex-shrink:0;color:var(--cyan)}
 .primary-button{display:inline-flex;align-items:center;gap:16px;padding:15px 22px 15px 28px;color:var(--cream);background:linear-gradient(180deg,#ff6161,var(--coral));border:0;border-radius:14px;
   font-weight:800;font-size:1.02rem;letter-spacing:.02em;box-shadow:0 6px 0 #b82a35,0 0 34px rgba(255,79,79,.45);transition:transform .12s,box-shadow .12s;animation:cta-glow 2.8s ease-in-out infinite}
 .primary-button kbd{font:800 .68rem var(--font-body);background:rgba(0,0,0,.26);border-radius:7px;padding:4px 8px;letter-spacing:.04em}
